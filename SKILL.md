@@ -11,10 +11,11 @@ Use `holdedcli` to read and modify Holded data with a safe, repeatable workflow.
 ## Operational Flow
 
 1. Confirm technical prerequisites.
-2. Resolve the exact `holded actions` action.
-3. Classify the action as read or write.
-4. If it is a write operation, ask for explicit confirmation before execution.
-5. Run with `--json` and summarize IDs, HTTP status, and applied changes.
+2. Discover available actions with `holded actions list`.
+3. Inspect the selected action with `holded actions describe <action-id|operation-id>`.
+4. Classify the action as read or write.
+5. If it is a write operation, ask for explicit confirmation before execution.
+6. Run with `--json` and summarize IDs, HTTP status, and applied changes.
 
 ## Prerequisites
 
@@ -26,6 +27,7 @@ Use `holdedcli` to read and modify Holded data with a safe, repeatable workflow.
 
 - Treat any `POST`, `PUT`, `PATCH`, or `DELETE` action as **write**.
 - Treat any `GET` action (or `HEAD` when present) as **read**.
+- Always run `holded actions list` and `holded actions describe` before execution to validate action availability and accepted parameters.
 - Ask for explicit user confirmation **every time** before any write action.
 - Do not execute writes on ambiguous replies (`ok`, `go ahead`, `continue`) without clarification.
 - Repeat the exact command before confirmation to avoid unintended changes.
@@ -57,16 +59,18 @@ Execute only after an explicit affirmative response.
 ### Read Operations
 
 1. Locate the action with `holded actions list --json` (use `--filter`).
-2. Run `holded actions run <action> ... --json`.
-3. Return a clear summary and relevant IDs for follow-up steps.
+2. Verify accepted path/query/body parameters with `holded actions describe <action-id|operation-id> --json`.
+3. Run `holded actions run <action> ... --json`.
+4. Return a clear summary and relevant IDs for follow-up steps.
 
 ### Write Operations
 
 1. Locate and validate the action.
-2. Prepare the final payload.
-3. Request mandatory confirmation.
-4. Run the command after confirmation.
-5. Report result (`status_code`, affected ID, API response).
+2. Run `holded actions describe <action-id|operation-id> --json` to verify required/optional parameters.
+3. Prepare the final payload.
+4. Request mandatory confirmation.
+5. Run the command after confirmation.
+6. Report result (`status_code`, affected ID, API response).
 
 ## Base Commands
 
@@ -76,6 +80,7 @@ holded auth status
 holded ping --json
 holded actions list --json
 holded actions list --filter contacts --json
+holded actions describe invoice.get-contact --json
 holded actions run invoice.get-contact --path contactId=<id> --json
 ```
 
@@ -98,4 +103,6 @@ holded actions run invoice.update-contact \
 ## References
 
 - Read `{baseDir}/references/holdedcli-reference.md` for quick commands and criteria.
-- Use dynamic action discovery via `holded actions list --json`.
+- Use dynamic action discovery and parameter inspection via:
+  - `holded actions list --json`
+  - `holded actions describe <action-id|operation-id> --json`

@@ -7,12 +7,18 @@ It supports:
 - Reading ERP data (contacts, invoices, products, CRM, projects, team, accounting)
 - Updating ERP data through Holded API actions
 - Safe execution with structured command output (`--json`)
+- Action discovery and parameter inspection before execution (`actions list` + `actions describe`)
 
 ## Safety Policy
 
 This skill always asks for explicit user confirmation before any write operation (`POST`, `PUT`, `PATCH`, `DELETE`).
 
 No write command should run without a clear affirmative confirmation from the user.
+
+This skill also verifies action availability and accepted parameters before execution using:
+
+- `holded actions list`
+- `holded actions describe <action-id|operation-id>`
 
 ## Repository Structure
 
